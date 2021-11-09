@@ -7,4 +7,12 @@ module GamesEnumerables
   def get_average(counter, data)
     (counter / data.count).round(2)
   end
+
+  def get_team_ids
+    team_ids = []
+    @game_data.each do |row|
+      team_id << row["team_id"]
+    end
+    team_ids.uniq
+  end
 end

@@ -1,7 +1,7 @@
-require './lib/stat_tracker'
-require './lib/games_modules'
-require './lib/league_stats_module'
-require './lib/teams_module'
+require_relative './stat_tracker'
+require_relative './games_modules'
+require_relative './league_stats_module'
+require_relative './teams_module'
 
 class TeamsData
 

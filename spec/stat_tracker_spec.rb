@@ -1,5 +1,6 @@
 require './lib/stat_tracker'
 require 'simplecov'
+SimpleCov.start
 require 'csv'
 # SimpleCov.start
 
