@@ -1,6 +1,6 @@
-require './lib/stat_tracker'
-require './lib/games_modules'
-require './lib/league_stats_module'
+require_relative './lib/stat_tracker'
+require_relative './lib/games_modules'
+require_relative './lib/league_stats_module'
 
 class TeamsData
 
@@ -88,7 +88,7 @@ class TeamsData
     selected_team_games = @game_teams_data.select do |csv_row|
       csv_row["team_id"] == team_id.to_s
     end
-    
+
     total_won = []
     total_lost = []
     selected_team_games.each do |game|
