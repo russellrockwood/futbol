@@ -19,33 +19,33 @@ RSpec.describe SeasonStats do
     @stat_tracker = StatTracker.from_csv(@locations)
   end
 
-  it 'exists' do
+  xit 'exists' do
     season_obj = SeasonStats.new(@stat_tracker)
     expect(season_obj).to be_instance_of(SeasonStats)
   end
 
-  it 'creates a hash of data by season' do
+  xit 'creates a hash of data by season' do
     season_obj = SeasonStats.new(@stat_tracker)
 
     expect(season_obj.hash_games_per_season).to be_a(Hash)
     expect(season_obj.hash_games_per_season.count).to eq(6)
   end
 
-  it 'shows all seasons in dataset' do
+  xit 'shows all seasons in dataset' do
     season_obj = SeasonStats.new(@stat_tracker)
 
     expected = ["20122013", "20162017", "20142015", "20152016", "20132014", "20172018"]
     expect(season_obj.all_season).to eq(expected)
   end
 
-  it 'shows an array of games for a given season' do
+  xit 'shows an array of games for a given season' do
     season_obj = SeasonStats.new(@stat_tracker)
 
 
     expect(season_obj.array_of_games("20142015")).to be_a Array
   end
 
-  it 'shows an array of coaches for a given season' do
+  xit 'shows an array of coaches for a given season' do
     season_obj = SeasonStats.new(@stat_tracker)
     expected = []
 
@@ -55,9 +55,9 @@ RSpec.describe SeasonStats do
   xit 'shows a coaches win percentage' do
     season_obj = SeasonStats.new(@stat_tracker)
     coach = "Mike Yeo"
-    season = "20122013"
+    season = "20132014"
 
-    expect(season_obj.coach_win_percentage(season, coach)).to eq(0.20)
+    expect(season_obj.coach_win_percentage(season, coach)).to eq(0.39)
   end
 
   xit 'shows calculates win percentage' do
@@ -95,7 +95,7 @@ RSpec.describe SeasonStats do
     season_obj = SeasonStats.new(@stat_tracker)
     season = "20122013"
     team_id = "6"
-    expected = 271
+    expected = 40255
 
 
     expect(season_obj.team_tackles(season, team_id)).to eq(expected)
@@ -121,13 +121,13 @@ RSpec.describe SeasonStats do
     season_obj = SeasonStats.new(@stat_tracker)
     season = "20122013"
     team_id = "6"
-    expected = 3.17
+    expected = 3.39
 
 
     expect(season_obj.team_goals_ratio(season, team_id)).to eq(expected)
   end
 
-  xit 'shows team with the best shots to goals ratio in a season' do
+  it 'shows team with the best shots to goals ratio in a season' do
     season_obj = SeasonStats.new(@stat_tracker)
     season = "20122013"
     expected = "New York City FC"
@@ -135,7 +135,7 @@ RSpec.describe SeasonStats do
     expect(season_obj.most_accurate_team(season)).to eq(expected)
   end
 
-  xit 'shows team with the worst shots to goals ratio in a season' do
+  it 'shows team with the worst shots to goals ratio in a season' do
     season_obj = SeasonStats.new(@stat_tracker)
     season = "20122013"
     expected = "Houston Dynamo"

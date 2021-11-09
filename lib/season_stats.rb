@@ -1,7 +1,8 @@
 require './lib/season_module'
+require './lib/league_stats_module'
 
 class SeasonStats
-  # include SeasonEnumerable
+  include LeagueEnumerables
 
   attr_reader :game_data,
               :team_data,
@@ -73,31 +74,34 @@ class SeasonStats
   end
 
   def coach_win_percentage(season, coach)
-    result_array = []
-    @game_teams.each do |row|
-      if array_of_games(season).include?(row['game_id']) && row["head_coach"] == coach
-          result_array << row["result"]
+    data = season_game_ids_to_games
+    results_array = []
+    data[season].each do |row|
+      if row['head_coach'] == coach
+        results_array << row['result']
       end
     end
-    win_percentage(result_array)
+    win_percentage(results_array)
   end
 
+  ## Still Takes Kinda long!!!
   def winningest_coach(season)
     hash = Hash.new
     coaches = coaches_in_season(season)
     coaches.each do |coach|
       hash[coach] = coach_win_percentage(season, coach)
     end
-    hash.key(hash.values.max)
+    find_max(hash)
   end
 
+  ## Still Takes Kinda long!!!
   def worst_coach(season)
     hash = Hash.new
     coaches = coaches_in_season(season)
     coaches.each do |coach|
       hash[coach] = coach_win_percentage(season, coach)
     end
-    hash.key(hash.values.min)
+    find_min(hash)
   end
 
   def win_percentage(results)
@@ -116,86 +120,93 @@ class SeasonStats
     (wins.to_f / results.length).round(2)
   end
 
+  ## This works
   def teams_in_season(season)
-    team_ids = []
-    @game_teams.each do |row|
-      if array_of_games(season).include?(row['game_id'])
+    data = season_game_ids_to_games
+    team_ids = Array.new
+    data[season].each do |row|
         team_ids << row["team_id"]
-      end
     end
     team_ids.uniq
+
+    # team_ids = []
+    # @game_teams.each do |row|
+    #   if array_of_games(season).include?(row['game_id'])
+    #     team_ids << row["team_id"]
+    #   end
+    # end
+    # team_ids.uniq
   end
 
   def team_tackles(season, team_id)
+    data = season_game_ids_to_games
     result_array = []
-    @game_teams.each do |row|
-      if array_of_games(season).include?(row['game_id']) && row["team_id"] == team_id
-          result_array << row["tackles"].to_i
-      end
+    data[season].each do |row|
+      result_array << row["tackles"].to_i
     end
     result_array.sum
   end
 
+  ##This method takes forever too!!
   def most_tackles(season)
     tackles = Hash.new
-    teams_id = teams_in_season(season)
-    teams_id.each do |team_id|
+    teams_in_season(season).each do |team_id|
       tackles[team_id] = team_tackles(season, team_id)
     end
-    convert_team_id_to_name(tackles.key(tackles.values.max).to_i)
+    convert_team_id_to_name(find_max(tackles).to_i)
   end
 
-## Needs to be put into a module
-  def convert_team_id_to_name(team_id_integer)
-    name_array = []
-    @team_data.each do |row|
-      if row['team_id'].to_i == team_id_integer
-        name_array << row['teamName']
-      end
-    end
-    name_array[0]
-  end
-
+  ##This method Takes a long time
   def fewest_tackles(season)
     tackles = Hash.new
-    teams_id = teams_in_season(season)
-    teams_id.each do |team_id|
+    teams_in_season(season).each do |team_id|
       tackles[team_id] = team_tackles(season, team_id)
     end
-    convert_team_id_to_name(tackles.key(tackles.values.min).to_i)
+    ## Use #find_min and #find_max in league_Stats_module
+    convert_team_id_to_name(find_min(tackles).to_i)
   end
 
   def team_goals_ratio(season, team_id)
+    data = season_game_ids_to_games
     shots_array = []
     goals_array = []
-    @game_teams.each do |row|
-      if array_of_games(season).include?(row['game_id']) && row["team_id"] == team_id
-          shots_array<< row["shots"].to_i
-      end
+    data[season].each do |row|
+        shots_array << row["shots"].to_i
     end
-    @game_teams.each do |row|
-      if array_of_games(season).include?(row['game_id']) && row["team_id"] == team_id
-          goals_array << row["goals"].to_i
-      end
+    data[season].each do |row|
+      goals_array << row["goals"].to_i
     end
     (shots_array.sum / goals_array.sum.to_f).round(2)
+
+    # data = season_game_ids_to_games
+    # shots_array = []
+    # goals_array = []
+    # data[season].each do |row|
+    #   if row["team_id"] == team_id
+    #       shots_array << row["shots"].to_i
+    #   end
+    # end
+    # data[season].each do |row|
+    #   if row["team_id"] == team_id
+    #       goals_array << row["goals"].to_i
+    #   end
+    # end
+    # (shots_array.sum / goals_array.sum.to_f).round(2)
   end
 
   def most_accurate_team(season)
     ratio = Hash.new
-    teams_id = teams_in_season(season)
-    teams_id.each do |team_id|
+    teams_in_season(season).each do |team_id|
       ratio[team_id] = team_goals_ratio(season, team_id)
     end
-    convert_team_id_to_name(ratio.key(ratio.values.min).to_i)
+    convert_team_id_to_name(find_min(ratio).to_i)
   end
 
   def least_accurate_team(season)
     ratio = Hash.new
-    teams_id = teams_in_season(season)
-    teams_id.each do |team_id|
+    teams_in_season(season).each do |team_id|
       ratio[team_id] = team_goals_ratio(season, team_id)
     end
-    convert_team_id_to_name(ratio.key(ratio.values.max).to_i)
+    convert_team_id_to_name(rind_max(ratio).to_i)
   end
 end
