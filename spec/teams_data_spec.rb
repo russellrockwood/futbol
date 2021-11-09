@@ -48,6 +48,14 @@ RSpec.describe TeamsData do
     expect(team_obj.all_games_by_team(6).count).to eq(510)
   end
 
+  it 'finds all game_teams by team id' do
+    team_obj = TeamsData.new(@stat_tracker)
+    team_id = 6
+
+    expect(team_obj.team_games_by_id(team_id)).to be_a(Array)
+    expect(team_obj.team_games_by_id(team_id).count).to eq(510)
+  end
+
   it 'calculates win percentage' do
     team_obj = TeamsData.new(@stat_tracker)
     team_id = 6
@@ -103,7 +111,7 @@ RSpec.describe TeamsData do
     expect(team_obj.face_off_win_percentage(face_offs, 6)).to eq(52.17)
   end
 
-  it 'calculates win percentage for all games by team' do
+  it 'calculates average win percentage for all games by team' do
     team_obj = TeamsData.new(@stat_tracker)
 
     expect(team_obj.average_win_percentage(6)).to eq(62.59)
@@ -121,8 +129,17 @@ RSpec.describe TeamsData do
     expect(team_obj.fewest_goals_scored(6)).to eq(0)
   end
 
+  it 'creates opponent win percentage hash' do
+    team_obj = TeamsData.new(@stat_tracker)
+    team_id = 6
+
+    expect(team_obj.opponent_win_percentages(team_id)).to be_a(Hash)
+    expect(team_obj.opponent_win_percentages(team_id).count).to eq(31)
+  end
+
   it 'finds favorite opponent' do
     team_obj = TeamsData.new(@stat_tracker)
+
     expect(team_obj.favorite_opponent(6)).to eq('Columbus Crew SC')
   end
 

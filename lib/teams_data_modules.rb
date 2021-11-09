@@ -1,3 +1,0 @@
-module TeamsEnumerables
-
-end

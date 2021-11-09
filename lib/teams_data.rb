@@ -1,13 +1,11 @@
 require './lib/stat_tracker'
 require './lib/games_modules'
 require './lib/league_stats_module'
-require './lib/teams_data_modules'
 
 class TeamsData
 
   include GamesEnumerables
   include LeagueEnumerables
-  # include TeamsEnumerables
 
   attr_reader :team_data
 
@@ -75,9 +73,7 @@ class TeamsData
     team_games.each do |season, games|
       win_percentages_by_season[season] = season_win_percentage(games, team_id)
     end
-
     win_percentages_by_season
-    # require 'pry'; binding.pry
   end
 
   def best_season(team_id)
@@ -107,29 +103,30 @@ class TeamsData
     average_win_percentage
   end
 
-  def most_goals_scored(team_id)
+  def team_games_by_id(team_id)
     selected_team_games = @game_teams_data.select do |csv_row|
       csv_row["team_id"] == team_id.to_s
     end
+    selected_team_games
+  end
+
+  def most_goals_scored(team_id)
+    selected_team_games = team_games_by_id(team_id)
 
     highest_score = 0
-
     selected_team_games.each do |game|
       if game["goals"].to_i > highest_score
         highest_score = game["goals"].to_i
       end
-
     end
+
     highest_score
   end
 
   def fewest_goals_scored(team_id)
-    selected_team_games = @game_teams_data.select do |csv_row|
-      csv_row["team_id"] == team_id.to_s
-    end
+    selected_team_games = team_games_by_id(team_id)
 
     lowest_score = 100
-
     selected_team_games.each do |game|
       if game["goals"].to_i < lowest_score
         lowest_score = game["goals"].to_i
@@ -137,16 +134,6 @@ class TeamsData
 
     end
     lowest_score
-  end
-
-  def convert_team_id_to_name(team_id_integer)
-    name_array = []
-    @team_data.each do |row|
-      if row['team_id'].to_i == team_id_integer
-        name_array << row['teamName']
-      end
-    end
-    name_array[0]
   end
 
   def get_opponent_ids(team_games, team_id)
@@ -164,6 +151,7 @@ class TeamsData
 
   def get_face_offs(team1_id, team2_id)
     team1_games = all_games_by_team(team1_id)
+
     face_offs = team1_games.select do |row|
       row['home_team_id'] == team2_id.to_s || row['away_team_id'] == team2_id.to_s
     end
@@ -201,7 +189,7 @@ class TeamsData
     win_percentage
   end
 
-  def favorite_opponent(team_id)
+  def opponent_win_percentages(team_id)
     team_games = all_games_by_team(team_id)
 
     opponent_ids = get_opponent_ids(team_games, team_id)
@@ -215,29 +203,18 @@ class TeamsData
     games_by_team.each do |opponent_id, all_face_offs|
       win_percentage_by_team[opponent_id] = face_off_win_percentage(all_face_offs, team_id)
     end
+    win_percentage_by_team
+  end
 
-    favorite_opponent_id = win_percentage_by_team.key(win_percentage_by_team.values.max)
+  def favorite_opponent(team_id)
+    favorite_opponent_id = find_max(opponent_win_percentages(team_id))
 
     convert_team_id_to_name(favorite_opponent_id.to_i)
   end
 
   def rival(team_id)
-    team_games = all_games_by_team(team_id)
+    rival_id = find_min(opponent_win_percentages(team_id))
 
-    opponent_ids = get_opponent_ids(team_games, team_id)
-
-    games_by_team = Hash.new
-    opponent_ids.each do |opponent_id|
-      games_by_team[opponent_id] = get_face_offs(team_id, opponent_id.to_i)
-    end
-
-    win_percentage_by_team = Hash.new
-    games_by_team.each do |opponent_id, all_face_offs|
-      win_percentage_by_team[opponent_id] = face_off_win_percentage(all_face_offs, team_id)
-    end
-
-    favorite_opponent_id = win_percentage_by_team.key(win_percentage_by_team.values.min)
-
-    convert_team_id_to_name(favorite_opponent_id.to_i)
+    convert_team_id_to_name(rival_id.to_i)
   end
 end
