@@ -215,6 +215,5 @@ class SeasonStats
       ratio[team_id] = team_goals_ratio(season, team_id)
     end
     convert_team_id_to_name(find_max(ratio).to_i)
-    require "pry"; binding.pry
   end
 end
