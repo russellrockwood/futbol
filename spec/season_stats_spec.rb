@@ -31,25 +31,25 @@ RSpec.describe SeasonStats do
     expect(season_obj.hash_games_per_season.count).to eq(6)
   end
 
-  xit 'shows all seasons in dataset' do
+  it 'shows all seasons in dataset' do
     season_obj = SeasonStats.new(@stat_tracker)
 
     expected = ["20122013", "20162017", "20142015", "20152016", "20132014", "20172018"]
     expect(season_obj.all_season).to eq(expected)
   end
 
-  xit 'shows an array of games for a given season' do
+  it 'shows an array of games for a given season' do
     season_obj = SeasonStats.new(@stat_tracker)
 
 
     expect(season_obj.array_of_games("20142015")).to be_a Array
   end
 
-  xit 'shows an array of coaches for a given season' do
+  it 'shows an array of coaches for a given season' do
     season_obj = SeasonStats.new(@stat_tracker)
     expected = []
 
-    expect(season_obj.coaches_in_season("20122013").count).to eq(13)
+    expect(season_obj.coaches_in_season("20122013").count).to eq(34)
   end
 
   xit 'shows a coaches win percentage' do

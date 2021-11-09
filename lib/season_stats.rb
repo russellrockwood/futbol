@@ -12,8 +12,7 @@ class SeasonStats
     @game_data = current_stat_tracker.games
     @team_data = current_stat_tracker.teams
     @game_teams = current_stat_tracker.game_teams
-    @season_data = season_game_ids_to_games
-    require 'pry'; binding.pry
+    # @season_data = season_game_ids_to_games
   end
 
   def all_season
@@ -65,11 +64,10 @@ class SeasonStats
   end
 
   def coaches_in_season(season)
+    data = season_game_ids_to_games
     coaches = []
-    @game_teams.each do |row|
-      if array_of_games(season).include?(row['game_id'])
-        coaches << row["head_coach"]
-      end
+    data[season].each do |row|
+      coaches << row['head_coach']
     end
     coaches.uniq
   end
