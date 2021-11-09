@@ -1,6 +1,7 @@
 require './lib/stat_tracker'
 require './lib/games_data'
 require 'simplecov'
+SimpleCov.start
 require 'csv'
 
 RSpec.describe GamesData do

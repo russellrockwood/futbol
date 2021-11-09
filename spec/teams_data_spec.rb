@@ -1,5 +1,7 @@
 require './lib/stat_tracker'
 require './lib/teams_data'
+require 'simplecov'
+SimpleCov.start
 
 RSpec.describe TeamsData do
   before(:each) do

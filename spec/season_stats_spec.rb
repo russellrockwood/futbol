@@ -2,6 +2,7 @@ require './lib/stat_tracker'
 require './lib/league_stats'
 require './lib/season_stats'
 require 'simplecov'
+SimpleCov.start
 require 'csv'
 
 RSpec.describe SeasonStats do
