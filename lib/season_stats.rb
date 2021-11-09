@@ -1,21 +1,40 @@
+require './lib/season_module'
+
 class SeasonStats
+  # include SeasonEnumerable
+
   attr_reader :game_data,
               :team_data,
-              :games_teams
+              :game_teams,
+              :season_data
 
   def initialize(current_stat_tracker)
     @game_data = current_stat_tracker.games
     @team_data = current_stat_tracker.teams
-    @games_teams = current_stat_tracker.games_teams
+    @game_teams = current_stat_tracker.game_teams
+    @season_data = season_game_ids_to_games
+    require 'pry'; binding.pry
   end
 
   def all_season
     seasons = []
     # This each can be refactors
+
     @game_data.each do |row|
       seasons << row['season']
     end
     seasons.uniq
+  end
+
+  def game_ids_to_games(game_ids)
+    results = []
+    @game_teams.each do |game|
+      if game_ids.any? {|id| id == game['game_id']}
+        results << game
+      end
+    end
+
+    results
   end
 
   def array_of_games(season)
@@ -28,9 +47,26 @@ class SeasonStats
     games_array
   end
 
+  def season_game_ids_to_games
+    new_hash = {}
+    season_hash = hash_games_per_season
+    season_hash.each do |season, game_ids|
+      new_hash[season] =  game_ids_to_games(game_ids)
+    end
+    new_hash
+  end
+
+  def hash_games_per_season
+    games_per_season = Hash.new
+    all_season.each do |season|
+      games_per_season[season] = array_of_games(season)
+    end
+    games_per_season
+  end
+
   def coaches_in_season(season)
     coaches = []
-    @games_teams.each do |row|
+    @game_teams.each do |row|
       if array_of_games(season).include?(row['game_id'])
         coaches << row["head_coach"]
       end
@@ -40,7 +76,7 @@ class SeasonStats
 
   def coach_win_percentage(season, coach)
     result_array = []
-    @games_teams.each do |row|
+    @game_teams.each do |row|
       if array_of_games(season).include?(row['game_id']) && row["head_coach"] == coach
           result_array << row["result"]
       end
@@ -84,7 +120,7 @@ class SeasonStats
 
   def teams_in_season(season)
     team_ids = []
-    @games_teams.each do |row|
+    @game_teams.each do |row|
       if array_of_games(season).include?(row['game_id'])
         team_ids << row["team_id"]
       end
@@ -94,7 +130,7 @@ class SeasonStats
 
   def team_tackles(season, team_id)
     result_array = []
-    @games_teams.each do |row|
+    @game_teams.each do |row|
       if array_of_games(season).include?(row['game_id']) && row["team_id"] == team_id
           result_array << row["tackles"].to_i
       end
@@ -134,12 +170,12 @@ class SeasonStats
   def team_goals_ratio(season, team_id)
     shots_array = []
     goals_array = []
-    @games_teams.each do |row|
+    @game_teams.each do |row|
       if array_of_games(season).include?(row['game_id']) && row["team_id"] == team_id
           shots_array<< row["shots"].to_i
       end
     end
-    @games_teams.each do |row|
+    @game_teams.each do |row|
       if array_of_games(season).include?(row['game_id']) && row["team_id"] == team_id
           goals_array << row["goals"].to_i
       end
