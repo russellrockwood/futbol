@@ -123,6 +123,8 @@ class SeasonStats
   ## This works
   def teams_in_season(season)
     data = season_game_ids_to_games
+    ## I added This. It was originally set to an empty array but it did not work
+    ## so I set it to 'Array.new' and it worked
     team_ids = Array.new
     data[season].each do |row|
         team_ids << row["team_id"]
@@ -171,12 +173,15 @@ class SeasonStats
     shots_array = []
     goals_array = []
     data[season].each do |row|
+      if row['team_id'] == team_id
         shots_array << row["shots"].to_i
-    end
-    data[season].each do |row|
-      goals_array << row["goals"].to_i
+        goals_array << row["goals"].to_i
+      end
     end
     (shots_array.sum / goals_array.sum.to_f).round(2)
+    # data[season].each do |row|
+    #   goals_array << row["goals"].to_i
+    # end
 
     # data = season_game_ids_to_games
     # shots_array = []
@@ -194,6 +199,7 @@ class SeasonStats
     # (shots_array.sum / goals_array.sum.to_f).round(2)
   end
 
+  ## This takes a LONG TIME
   def most_accurate_team(season)
     ratio = Hash.new
     teams_in_season(season).each do |team_id|
@@ -202,11 +208,13 @@ class SeasonStats
     convert_team_id_to_name(find_min(ratio).to_i)
   end
 
+  ## This takes a LONG TIME
   def least_accurate_team(season)
     ratio = Hash.new
     teams_in_season(season).each do |team_id|
       ratio[team_id] = team_goals_ratio(season, team_id)
     end
-    convert_team_id_to_name(rind_max(ratio).to_i)
+    convert_team_id_to_name(find_max(ratio).to_i)
+    require "pry"; binding.pry
   end
 end
