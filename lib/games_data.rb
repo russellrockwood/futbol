@@ -1,5 +1,5 @@
-require_relative './lib/stat_tracker'
-require_relative './lib/games_modules'
+require_relative './stat_tracker'
+require_relative './games_modules'
 
 class GamesData
   include GamesEnumerables

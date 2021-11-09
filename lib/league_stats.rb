@@ -1,4 +1,5 @@
-require_relative './lib/league_stats_module'
+require_relative './league_stats_module'
+
 class LeagueStats
 
   include LeagueEnumerables
