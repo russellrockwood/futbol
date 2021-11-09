@@ -88,7 +88,7 @@ class TeamsData
     selected_team_games = @game_teams_data.select do |csv_row|
       csv_row["team_id"] == team_id.to_s
     end
-    
+
     total_won = []
     total_lost = []
     selected_team_games.each do |game|
@@ -159,32 +159,33 @@ class TeamsData
   end
 
   def face_off_win_percentage(face_offs, team_id)
-    game_ids = []
-    face_offs.each do |game|
-      game_ids << game['game_id']
-    end
+    # game_ids = []
+    # face_offs.each do |game|
+    #   game_ids << game['game_id']
+    # end
+    #
+    # results = []
+    # @game_teams_data.each do |game|
+    #   if game_ids.any? {|id| id == game['game_id']}
+    #     results << game
+    #   end
+    # end
+    #
+    # total_won = 0
+    # total_lost = 0
+    # results.each do |game|
+    #   if team_id.to_s == game['team_id'] && game['result'] == 'WIN'
+    #     total_won += 1
+    #   elsif team_id.to_s != game['team_id'] && game['result'] == 'LOSS'
+    #     total_won += 1
+    #   else
+    #     total_lost += 1
+    #   end
+    season_win_percentage(face_offs, team_id)
+    # end
 
-    results = []
-    @game_teams_data.each do |game|
-      if game_ids.any? {|id| id == game['game_id']}
-        results << game
-      end
-    end
-
-    total_won = 0
-    total_lost = 0
-    results.each do |game|
-      if team_id.to_s == game['team_id'] && game['result'] == 'WIN'
-        total_won += 1
-      elsif team_id.to_s != game['team_id'] && game['result'] == 'LOSS'
-        total_won += 1
-      else
-        total_lost += 1
-      end
-    end
-
-    win_percentage = ((total_won / (total_won + total_lost).to_f) * 100).round(2)
-    win_percentage
+    # win_percentage = ((total_won / (total_won + total_lost).to_f) * 100).round(2)
+    # win_percentage
   end
 
   def opponent_win_percentages(team_id)
