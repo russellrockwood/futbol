@@ -1,7 +1,16 @@
 require './lib/stat_tracker'
-class TeamsData < StatTracker
+require './lib/games_modules'
+require './lib/league_stats_module'
+require './lib/teams_data_modules'
+
+class TeamsData
+
+  include GamesEnumerables
+  include LeagueEnumerables
+  # include TeamsEnumerables
 
   attr_reader :team_data
+
   def initialize(current_stat_tracker)
     @team_data = current_stat_tracker.teams
     @game_data = current_stat_tracker.games
@@ -20,11 +29,8 @@ class TeamsData < StatTracker
         abbreviation: selected_team[0]["abbreviation"],
         link: selected_team[0]["link"]
       }
-
       team_hash
-
   end
-
 
   def all_games_by_team(team_id)
     games = @game_data.select do |row|
@@ -32,15 +38,6 @@ class TeamsData < StatTracker
     end
     games
   end
-
-  def get_game_ids(array_of_games)
-    ids = []
-    array_of_games.each do |game|
-      ids << game['game_id']
-    end
-    ids
-  end
-
 
   def season_win_percentage(season_games, team_id)
     total_won = 0
@@ -56,9 +53,7 @@ class TeamsData < StatTracker
         total_won += 1
       end
     end
-
-     win_percentage = ((total_won.to_f / season_games.length) * 100).round(2)
-
+     return_percentage(total_won, season_games)
   end
 
   def team_games_per_season(team_id)
@@ -71,30 +66,26 @@ class TeamsData < StatTracker
     season_games = Hash[seasons.collect { |item| [item, team_games.select { |game| item == game['season']}] } ]
 
     season_games
+  end
 
+  def win_percentages_by_season(team_id)
+    team_games = team_games_per_season(team_id)
+
+    win_percentages_by_season = {}
+    team_games.each do |season, games|
+      win_percentages_by_season[season] = season_win_percentage(games, team_id)
+    end
+
+    win_percentages_by_season
+    # require 'pry'; binding.pry
   end
 
   def best_season(team_id)
-    team_games = team_games_per_season(team_id)
-
-    win_percentages_by_season = {}
-    team_games.each do |season, games|
-      win_percentages_by_season[season] = season_win_percentage(games, team_id)
-    end
-
-    win_percentages_by_season.key(win_percentages_by_season.values.max)
+    find_max(win_percentages_by_season(team_id))
   end
 
-
   def worst_season(team_id)
-    team_games = team_games_per_season(team_id)
-
-    win_percentages_by_season = {}
-    team_games.each do |season, games|
-      win_percentages_by_season[season] = season_win_percentage(games, team_id)
-    end
-
-    win_percentages_by_season.key(win_percentages_by_season.values.min)
+    find_min(win_percentages_by_season(team_id))
   end
 
   def average_win_percentage(team_id)
