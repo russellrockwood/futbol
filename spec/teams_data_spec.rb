@@ -19,6 +19,7 @@ RSpec.describe TeamsData do
 
   it 'is exists' do
     team_obj = TeamsData.new(@stat_tracker)
+
     expect(team_obj).to be_instance_of(TeamsData)
   end
 
@@ -99,34 +100,41 @@ RSpec.describe TeamsData do
 
   it 'finds all games between two teams' do
     team_obj = TeamsData.new(@stat_tracker)
+    team1_id = 6
+    team2_id = 3
+    team3_id = 17
 
-    expect(team_obj.get_face_offs(6,3).count).to eq(23)
-    expect(team_obj.get_face_offs(6,17).count).to eq(26)
+    expect(team_obj.get_face_offs(team1_id, team2_id).count).to eq(23)
+    expect(team_obj.get_face_offs(team1_id, team3_id).count).to eq(26)
   end
 
   it 'calculates face off win percentage' do
     team_obj = TeamsData.new(@stat_tracker)
     face_offs = team_obj.get_face_offs(3,6)
+    team_id = 6
 
-    expect(team_obj.face_off_win_percentage(face_offs, 6)).to eq(52.17)
+    expect(team_obj.face_off_win_percentage(face_offs, team_id)).to eq(52.17)
   end
 
   it 'calculates average win percentage for all games by team' do
     team_obj = TeamsData.new(@stat_tracker)
+    team_id = 6
 
-    expect(team_obj.average_win_percentage(6)).to eq(62.59)
+    expect(team_obj.average_win_percentage(team_id)).to eq(62.59)
   end
 
   it 'finds most scored goals by team' do
     team_obj = TeamsData.new(@stat_tracker)
+    team_id = 6
 
-    expect(team_obj.most_goals_scored(6)).to eq(6)
+    expect(team_obj.most_goals_scored(team_id)).to eq(6)
   end
 
   it 'finds lowest scoring game by team' do
     team_obj = TeamsData.new(@stat_tracker)
+    team_id = 6
 
-    expect(team_obj.fewest_goals_scored(6)).to eq(0)
+    expect(team_obj.fewest_goals_scored(team_id)).to eq(0)
   end
 
   it 'creates opponent win percentage hash' do
@@ -139,14 +147,16 @@ RSpec.describe TeamsData do
 
   it 'finds favorite opponent' do
     team_obj = TeamsData.new(@stat_tracker)
+    team_id = 6
 
-    expect(team_obj.favorite_opponent(6)).to eq('Columbus Crew SC')
+    expect(team_obj.favorite_opponent(team_id)).to eq('Columbus Crew SC')
   end
 
   it 'finds rival team' do
     team_obj = TeamsData.new(@stat_tracker)
+    team_id = 6
 
-    expect(team_obj.rival(6)).to eq('Real Salt Lake')
+    expect(team_obj.rival(team_id)).to eq('Real Salt Lake')
   end
 
 end

@@ -88,9 +88,9 @@ class TeamsData
     selected_team_games = @game_teams_data.select do |csv_row|
       csv_row["team_id"] == team_id.to_s
     end
+    
     total_won = []
     total_lost = []
-
     selected_team_games.each do |game|
       if game["result"] == "WIN"
         total_won << game
@@ -131,7 +131,6 @@ class TeamsData
       if game["goals"].to_i < lowest_score
         lowest_score = game["goals"].to_i
       end
-
     end
     lowest_score
   end
@@ -185,13 +184,11 @@ class TeamsData
     end
 
     win_percentage = ((total_won / (total_won + total_lost).to_f) * 100).round(2)
-
     win_percentage
   end
 
   def opponent_win_percentages(team_id)
     team_games = all_games_by_team(team_id)
-
     opponent_ids = get_opponent_ids(team_games, team_id)
 
     games_by_team = Hash.new
@@ -208,13 +205,11 @@ class TeamsData
 
   def favorite_opponent(team_id)
     favorite_opponent_id = find_max(opponent_win_percentages(team_id))
-
     convert_team_id_to_name(favorite_opponent_id.to_i)
   end
 
   def rival(team_id)
     rival_id = find_min(opponent_win_percentages(team_id))
-
     convert_team_id_to_name(rival_id.to_i)
   end
 end
