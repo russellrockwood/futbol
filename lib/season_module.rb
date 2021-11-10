@@ -20,7 +20,7 @@ module SeasonEnumerables
 
   def all_season
     seasons = []
-    @game_data.each do |row|
+    @games.each do |row|
       seasons << row['season']
     end
     seasons.uniq
@@ -38,7 +38,7 @@ module SeasonEnumerables
 
   def array_of_games(season)
     games_array = []
-    @game_data.each do |row|
+    @games.each do |row|
       if row["season"] == season
         games_array << row["game_id"]
       end

@@ -3,28 +3,20 @@ require_relative './games_modules'
 require_relative './league_stats_module'
 require_relative './teams_module'
 
-class TeamsData
+module TeamsData
 
   include GamesEnumerables
   include LeagueEnumerables
   include TeamsEnumerables
 
-  attr_reader :team_data
-
-  def initialize(current_stat_tracker)
-    @team_data = current_stat_tracker.teams
-    @game_data = current_stat_tracker.games
-    @game_teams_data = current_stat_tracker.game_teams
-  end
-
   def team_info(team_id)
-    selected_team = @team_data.select do |csv_row|
+    selected_team = @teams.select do |csv_row|
         csv_row["team_id"] == team_id.to_s
       end
 
       team_hash = {
-        team_id: selected_team[0]["team_id"].to_i,
-        franchiseId: selected_team[0]["franchiseId"].to_i,
+        team_id: selected_team[0]["team_id"],
+        franchiseId: selected_team[0]["franchiseId"],
         teamName: selected_team[0]["teamName"],
         abbreviation: selected_team[0]["abbreviation"],
         link: selected_team[0]["link"]
@@ -41,7 +33,7 @@ class TeamsData
   end
 
   def average_win_percentage(team_id)
-    selected_team_games = @game_teams_data.select do |csv_row|
+    selected_team_games = @game_teams.select do |csv_row|
       csv_row["team_id"] == team_id.to_s
     end
 
@@ -54,7 +46,7 @@ class TeamsData
         total_lost << game
       end
     end
-    average_win_percentage = ((total_won.size / (total_won.size + total_lost.size).to_f) * 100).round(2)
+    average_win_percentage = ((total_won.size / (total_won.size + total_lost.size).to_f)).round(2)
 
     average_win_percentage
   end

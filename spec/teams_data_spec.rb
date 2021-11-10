@@ -35,8 +35,8 @@ RSpec.describe TeamsData do
     team_obj = TeamsData.new(@stat_tracker)
 
     expected = {
-      team_id: 18,
-      franchiseId: 34,
+      team_id: '18',
+      franchiseId: '34',
       teamName: "Minnesota United FC",
       abbreviation: "MIN",
       link: "/api/v1/teams/18"

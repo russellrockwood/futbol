@@ -3,20 +3,10 @@ require_relative './league_stats_module'
 require_relative './season_module'
 require_relative './games_modules'
 
-class SeasonStats
+module SeasonStats
   include GamesEnumerables
   include LeagueEnumerables
   include SeasonEnumerables
-
-  attr_reader :game_data,
-              :team_data,
-              :game_teams
-
-  def initialize(current_stat_tracker)
-    @game_data = current_stat_tracker.games
-    @team_data = current_stat_tracker.teams
-    @game_teams = current_stat_tracker.game_teams
-  end
 
   def coaches_in_season(season)
     data = season_game_ids_to_games

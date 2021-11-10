@@ -6,7 +6,7 @@ module LeagueEnumerables
 
   def convert_team_id_to_name(team_id_integer)
     name_array = []
-    @team_data.each do |row|
+    @teams.each do |row|
       if row['team_id'].to_i == team_id_integer
         name_array << row['teamName']
       end

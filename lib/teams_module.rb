@@ -1,7 +1,7 @@
 module TeamsEnumerables
 
   def all_games_by_team(team_id)
-    games = @game_data.select do |row|
+    games = @games.select do |row|
       row['home_team_id'] == team_id.to_s || row['away_team_id'] == team_id.to_s
     end
     games
@@ -26,7 +26,7 @@ module TeamsEnumerables
   def team_games_per_season(team_id)
     team_games = all_games_by_team(team_id)
 
-    seasons = @game_data.map do |row|
+    seasons = @games.map do |row|
       row['season']
     end.uniq
 
@@ -61,7 +61,7 @@ module TeamsEnumerables
   end
 
   def team_games_by_id(team_id)
-    selected_team_games = @game_teams_data.select do |csv_row|
+    selected_team_games = @game_teams.select do |csv_row|
       csv_row["team_id"] == team_id.to_s
     end
     selected_team_games
